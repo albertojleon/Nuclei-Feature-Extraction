@@ -61,7 +61,8 @@ RUN git clone https://github.com/vqdang/hover_net
 RUN mkdir hovernet_model
 RUN gdown https://drive.google.com/uc?id=1NUnO4oQRGL-b0fyzlT8LKZzo6KJD0_6X -O hovernet_model/
 
-RUN apt-get install -y parallel
+RUN apt-get update -y && \
+    apt-get install -y parallel
 
 COPY ./src/ /app/src/
 
