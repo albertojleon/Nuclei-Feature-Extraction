@@ -46,4 +46,13 @@ cmd = ' '.join(cmd_docker)
 print(cmd)
 os.system(cmd)
 
-
+cmd_docker = ['docker', 'run', '--rm',
+              '--name', docker_img.split(':')[0] + '_analyze',
+              '-v', os.path.join('/data', 'countic', 'nuclei-feature-extraction', study) + ':/app/study',
+              '-v', '/data/docker/Nuclei-Feature-Extraction/src:/app/src', # for DEV only!!!
+              '--entrypoint', 'bash', 
+              docker_img,
+              '-c', '"python3 /app/src/run_segment_analyze.py --action=nucleoli --threads=16"']
+cmd = ' '.join(cmd_docker) 
+print(cmd)
+os.system(cmd)
