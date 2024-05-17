@@ -6,20 +6,22 @@ import pandas as pd
 study = 'TCGA-SKCM'
 
 samples_all = os.listdir(os.path.join('/data', 'countic', 'tiles_selected', study))
+os.makedirs(os.path.join('/data', 'countic', 'nuclei-feature-extraction', study), exist_ok=True)
 samples_done = os.listdir(os.path.join('/data', 'countic', 'nuclei-feature-extraction', study))
 samples_pending = [sample for sample in samples_all if sample not in samples_done]
 
 #samples_pending = samples_pending[1::2] ############################################################## TEMPORARY sub-sampling!!!
 
-
 docker_img = 'nuclei-feature-extraction:01'
+
+gpu_num='2' # valid options: 1, 2 (gpu=0 is a low-powerd graphics card)
 
 for sample in samples_pending:
   dir_in = os.path.join('/data', 'countic', 'tiles_selected', study, sample)
   dir_out = os.path.join('/data', 'countic', 'nuclei-feature-extraction', study, sample)
   os.makedirs(dir_out, exist_ok=True)
   cmd_inner = ['cd /app/src;', 'python3', '/app/src/run_segment_analyze.py', "--action", "segment"]
-  cmd_docker = ['docker', 'run', '--rm', '--gpus \'"device=0"\'',
+  cmd_docker = ['docker', 'run', '--rm', '--gpus \'"device=' + gpu_num + '"\'',
                 '--name', docker_img.split(':')[0] + '_' + sample,
                 '-v', dir_in + ':/app/src/inputs',
                 '-v', dir_out + ':' + '/app/src/outputs',
